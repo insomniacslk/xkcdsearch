@@ -65,22 +65,25 @@ func (x *XKCDSearch) FetchAll() ([]xkcd.Comic, error) {
 
 func (x *XKCDSearch) Update() error {
 	index, err := bleve.Open(x.cachedir)
-	if err != nil && err == bleve.ErrorIndexPathDoesNotExist {
-		mapping := bleve.NewIndexMapping()
-		index, err = bleve.New(x.cachedir, mapping)
-		if err != nil {
-			return fmt.Errorf("failed to create index: %w", err)
-		}
-		comics, err := x.FetchAll()
-		if err != nil {
-			return fmt.Errorf("FetchAll failed: %w", err)
-		}
-		for idx, comic := range comics {
-			// do indexing
-			if err := index.Index(strconv.FormatInt(int64(comic.Number), 10), comic); err != nil {
-				return fmt.Errorf("failed to index item %d: %w", idx, err)
+	if err != nil {
+		if err == bleve.ErrorIndexPathDoesNotExist {
+			mapping := bleve.NewIndexMapping()
+			index, err = bleve.New(x.cachedir, mapping)
+			if err != nil {
+				return fmt.Errorf("failed to create index: %w", err)
 			}
-			fmt.Println(comic.Alt)
+			comics, err := x.FetchAll()
+			if err != nil {
+				return fmt.Errorf("FetchAll failed: %w", err)
+			}
+			for idx, comic := range comics {
+				// do indexing
+				if err := index.Index(strconv.FormatInt(int64(comic.Number), 10), comic); err != nil {
+					return fmt.Errorf("failed to index item %d: %w", idx, err)
+				}
+			}
+		} else {
+			return fmt.Errorf("failed to open index: %w", err)
 		}
 	}
 	x.index = index
