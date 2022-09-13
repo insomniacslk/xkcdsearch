@@ -50,14 +50,10 @@ func (x *XKCDSearch) FetchAll() ([]xkcd.Comic, error) {
 	}
 	comics := make([]xkcd.Comic, 0, latest.Number)
 	for idx := 1; idx <= latest.Number; idx++ {
-		if idx >= 10 {
-			break
-		}
 		comic, err := client.Get(ctx, idx)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get metadata for xkcd.com/%d: %w", idx+1, err)
 		}
-		fmt.Printf("Comic: %+v", comic)
 		comics = append(comics, comic)
 	}
 	return comics, nil
