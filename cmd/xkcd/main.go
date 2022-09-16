@@ -31,6 +31,7 @@ func main() {
 	}
 	fmt.Printf("Title    : %s\n", comic.Title)
 	fmt.Printf("Number   : %d\n", comic.Number)
+	fmt.Printf("URL      : https://xkcd.com/%d\n", comic.Number)
 	fmt.Printf("ImageURL : %s\n", comic.ImageURL)
 	fmt.Printf("Alt      : %s\n", comic.Alt)
 }
