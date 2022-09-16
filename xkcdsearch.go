@@ -192,7 +192,6 @@ func (x *XKCDSearch) Search(terms string) (*xkcd.Comic, error) {
 		return nil, fmt.Errorf("not found")
 	}
 	c := xkcd.Comic{}
-	log.Printf("HIT %+v", res.Hits[0].Fields)
 	for name, value := range res.Hits[0].Fields {
 		switch name {
 		case "Alt":
