@@ -7,6 +7,7 @@ require (
 	github.com/kirsle/configdir v0.0.0-20170128060238-e45d2f54772f
 	github.com/nishanths/go-xkcd v2.0.1-0.20200515110959-4726b81e9134+incompatible
 	github.com/spf13/pflag v1.0.3
+	golang.org/x/time v0.0.0-20220722155302-e5dcc9cfc0b9
 )
 
 require (

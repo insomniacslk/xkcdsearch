@@ -7,6 +7,12 @@ import (
 
 	"github.com/insomniacslk/xkcdsearch"
 	"github.com/spf13/pflag"
+	"golang.org/x/time/rate"
+)
+
+var (
+	flagCacheDir  = pflag.StringP("cachedir", "c", "", "Cache directory where the index is stored")
+	flagRateLimit = pflag.DurationP("rate-limit", "l", xkcdsearch.DefaultRateInterval, "Rate limit expressed as time string (e.g. 10ms)")
 )
 
 func main() {
@@ -15,7 +21,11 @@ func main() {
 		log.Fatalf("No search term specified")
 	}
 	terms := strings.Join(pflag.Args(), " ")
-	link, err := xkcdsearch.Search(terms)
+	xkcd := xkcdsearch.New(
+		xkcdsearch.WithCacheDir(*flagCacheDir),
+		xkcdsearch.WithRateLimit(rate.Every(*flagRateLimit)),
+	)
+	link, err := xkcd.Search(terms)
 	if err != nil {
 		log.Fatal(err)
 	}
