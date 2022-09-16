@@ -165,11 +165,6 @@ func (x *XKCDSearch) Update() error {
 	if err := index.Batch(batch); err != nil {
 		return fmt.Errorf("batching failed: %w", err)
 	}
-	/*
-		if err := index.Close(); err != nil {
-			return fmt.Errorf("failed to close index: %w", err)
-		}
-	*/
 
 	x.index = index
 	return nil
