@@ -25,9 +25,12 @@ func main() {
 		xkcdsearch.WithCacheDir(*flagCacheDir),
 		xkcdsearch.WithRateLimit(rate.Every(*flagRateLimit)),
 	)
-	link, err := xkcd.Search(terms)
+	comic, err := xkcd.Search(terms)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(link)
+	fmt.Printf("Title    : %s\n", comic.Title)
+	fmt.Printf("Number   : %d\n", comic.Number)
+	fmt.Printf("ImageURL : %s\n", comic.ImageURL)
+	fmt.Printf("Alt      : %s\n", comic.Alt)
 }

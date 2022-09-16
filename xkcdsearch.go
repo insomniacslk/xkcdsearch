@@ -25,7 +25,7 @@ var (
 	DefaultRateInterval = 100 * time.Millisecond
 )
 
-func Search(terms string) (string, error) {
+func Search(terms string) (*xkcd.Comic, error) {
 	return xkcdsearcher.Search(terms)
 }
 
@@ -174,10 +174,10 @@ func (x *XKCDSearch) Update() error {
 	return nil
 }
 
-func (x *XKCDSearch) Search(terms string) (string, error) {
+func (x *XKCDSearch) Search(terms string) (*xkcd.Comic, error) {
 	if x.index == nil {
 		if err := x.Update(); err != nil {
-			return "", err
+			return nil, err
 		}
 	}
 	query := bleve.NewMatchQuery(terms)
@@ -185,16 +185,39 @@ func (x *XKCDSearch) Search(terms string) (string, error) {
 	search.Fields = []string{"ImageURL", "Alt", "Number", "Title"}
 	results, err := x.index.Search(search)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	res := *results
 	if len(res.Hits) == 0 {
-		return "not found", nil
+		return nil, fmt.Errorf("not found")
 	}
+	c := xkcd.Comic{}
+	log.Printf("HIT %+v", res.Hits[0].Fields)
 	for name, value := range res.Hits[0].Fields {
-		if name == "ImageURL" {
-			return fmt.Sprintf("%v", value), nil
+		switch name {
+		case "Alt":
+			c.Alt = value.(string)
+		case "Day":
+			c.Day = value.(int)
+		case "ImageURL":
+			c.ImageURL = value.(string)
+		case "URL":
+			c.URL = value.(string)
+		case "Month":
+			c.Month = value.(int)
+		case "News":
+			c.News = value.(string)
+		case "Number":
+			c.Number = int(value.(float64))
+		case "Title":
+			c.Title = value.(string)
+		case "SafeTitle":
+			c.SafeTitle = value.(string)
+		case "Transcript":
+			c.Transcript = value.(string)
+		case "Year":
+			c.Year = value.(int)
 		}
 	}
-	return "", fmt.Errorf("no image URL found for comic %+v", res)
+	return &c, nil
 }
