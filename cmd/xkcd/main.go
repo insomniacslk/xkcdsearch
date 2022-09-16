@@ -12,7 +12,7 @@ import (
 
 var (
 	flagCacheDir  = pflag.StringP("cachedir", "c", "", "Cache directory where the index is stored")
-	flagRateLimit = pflag.DurationP("rate-limit", "l", xkcdsearch.DefaultRateInterval, "Rate limit expressed as time string (e.g. 10ms)")
+	flagRateLimit = pflag.DurationP("rate-limit", "l", xkcdsearch.DefaultRateInterval, "Rate limit for how fast to fetch XKCD comics during an update, expressed as time string (e.g. 10ms)")
 )
 
 func main() {

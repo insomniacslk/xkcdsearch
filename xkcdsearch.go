@@ -52,6 +52,7 @@ type XKCDSearch struct {
 	index       bleve.Index
 	ratelimiter *rate.Limiter
 	log         *log.Logger
+	batchMu     sync.Mutex
 }
 
 func (x *XKCDSearch) Update() error {
@@ -155,6 +156,9 @@ func (x *XKCDSearch) Update() error {
 	wg.Wait()
 
 	// index all the comics in a batch
+	// bleve.Batch is not thread-safe
+	x.batchMu.Lock()
+	defer x.batchMu.Unlock()
 	batch := index.NewBatch()
 	for _, comic := range comics {
 		x.log.Printf("Indexing comic ID %d \"%s\"\n", comic.Number, comic.Title)
